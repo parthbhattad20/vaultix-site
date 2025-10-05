@@ -1,19 +1,17 @@
-import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Code,
-  FileCheck,
   Shield,
-  Users,
   Banknote,
   HeartPulse,
   GraduationCap,
   Factory,
-  ArrowRight
+  ArrowRight,
+  CheckCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import * as anime from 'animejs';
+import { motion } from 'framer-motion';
 
 const Industries = () => {
   const industrySolutions = [
@@ -85,61 +83,29 @@ const Industries = () => {
     },
   ];
 
-  const industryCardsRef = useRef([]);
-  const ctaRef = useRef(null);
-
-  useEffect(() => {
-    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>, staggerDelay = 0) => {
-      elementsRef.current.forEach((element, index) => {
-        if (element) {
-          anime({
-            targets: element,
-            opacity: [0, 1],
-            translateY: [50, 0],
-            easing: 'easeOutQuad',
-            duration: 800,
-            delay: index * staggerDelay,
-            autoplay: false,
-            begin: function(anim) {
-              const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    anim.play();
-                    observer.unobserve(entry.target);
-                  }
-                });
-              }, { threshold: 0.3 });
-              observer.observe(element);
-            }
-          });
-        }
-      });
-    };
-
-    animateOnScroll(industryCardsRef, 100);
-
-    if (ctaRef.current) {
-      anime({
-        targets: ctaRef.current,
-        opacity: [0, 1],
-        translateY: [50, 0],
-        easing: 'easeOutQuad',
-        duration: 800,
-        autoplay: false,
-        begin: function(anim) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                anim.play();
-                observer.unobserve(entry.target);
-              }
-            });
-          }, { threshold: 0.3 });
-          observer.observe(ctaRef.current);
-        }
-      });
+  // Framer Motion animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
     }
-  }, []);
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.6, -0.05, 0.01, 0.99] as const
+      }
+    }
+  };
 
   return (
     <div className="bg-slate-950 text-white min-h-screen py-20">
@@ -158,42 +124,51 @@ const Industries = () => {
         </div>
 
         {/* Industry Solutions Grid */}
-        <section className="mb-20">
+        <motion.section 
+          className="mb-20"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {industrySolutions.map((solution, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
-                ref={el => industryCardsRef.current[index] = el}
-              >
-                <CardHeader>
-                  <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
-                      <solution.icon className="h-6 w-6 text-purple-400" />
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                  <CardHeader className="">
+                    <div className="flex items-start space-x-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
+                        <solution.icon className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <CardTitle className="text-xl text-white">{solution.title}</CardTitle>
                     </div>
-                    <CardTitle className="text-xl text-white">{solution.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-400 leading-relaxed mb-4">{solution.description}</p>
-                  <h4 className="text-lg font-semibold mb-2">Key Use Cases:</h4>
-                  <ul className="space-y-1 text-slate-400 text-sm">
-                    {solution.useCases.map((useCase, ucIndex) => (
-                      <li key={ucIndex} className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
-                        <span>{useCase}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="">
+                    <p className="text-slate-400 leading-relaxed mb-4">{solution.description}</p>
+                    <h4 className="text-lg font-semibold mb-2">Key Use Cases:</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      {solution.useCases.map((useCase, ucIndex) => (
+                        <li key={ucIndex} className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span>{useCase}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
         {/* CTA */}
-        <section>
-          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 opacity-0" ref={ctaRef}>
+        <motion.section
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99] }}
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
             <CardContent className="p-12 text-center">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Find Your Industry-Specific Solution
@@ -203,14 +178,14 @@ const Industries = () => {
                 Contact us to discuss how we can customize our platform for your organization.
               </p>
               <Link to="/contact">
-                <Button size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold">
+                <Button variant="default" size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold">
                   Get a Tailored Demo
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
             </CardContent>
           </Card>
-        </section>
+        </motion.section>
       </div>
     </div>
   );

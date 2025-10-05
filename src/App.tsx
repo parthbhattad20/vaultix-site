@@ -5,7 +5,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Features from './pages/Features';
 import Solutions from './pages/Solutions';
-import Pricing from './pages/Pricing';
+// import Pricing from './pages/Pricing'; // Temporarily disabled - file corrupted
 import Contact from './pages/Contact';
 import Security from './pages/Security'; // New import
 import Industries from './pages/Industries'; // New import
@@ -20,7 +20,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/features" element={<Features />} />
             <Route path="/solutions" element={<Solutions />} />
-            <Route path="/pricing" element={<Pricing />} />
+            {/* <Route path="/pricing" element={<Pricing />} /> Temporarily disabled - file corrupted */}
             <Route path="/contact" element={<Contact />} />
             <Route path="/security" element={<Security />} /> {/* New Route */}
             <Route path="/industries" element={<Industries />} /> {/* New Route */}

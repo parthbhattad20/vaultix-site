@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, Lock, FileText, BarChart3, AlertTriangle, Fingerprint, Cloud, Server, HardDrive, GitBranch, Key, Users, CheckCircle } from 'lucide-react';
-import * as anime from 'animejs';
+import { Button } from '@/components/ui/button';
+import { Shield, Lock, FileText, AlertTriangle, Fingerprint, Cloud, Server, HardDrive, GitBranch, Key, Users, CheckCircle } from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
 
 const Security = () => {
   const securityFeatures = [
@@ -85,63 +85,31 @@ const Security = () => {
     },
   ];
 
-  const securityFeaturesRef = useRef([]);
-  const complianceCertificationsRef = useRef([]);
-  const ctaRef = useRef(null);
+  // Animation variants for Framer Motion
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
 
-  useEffect(() => {
-    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>, staggerDelay = 0) => {
-      elementsRef.current.forEach((element, index) => {
-        if (element) {
-          anime({
-            targets: element,
-            opacity: [0, 1],
-            translateY: [50, 0],
-            easing: 'easeOutQuad',
-            duration: 800,
-            delay: index * staggerDelay,
-            autoplay: false,
-            begin: function(anim) {
-              const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    anim.play();
-                    observer.unobserve(entry.target);
-                  }
-                });
-              }, { threshold: 0.3 });
-              observer.observe(element);
-            }
-          });
-        }
-      });
-    };
-
-    animateOnScroll(securityFeaturesRef, 100);
-    animateOnScroll(complianceCertificationsRef, 100);
-
-    if (ctaRef.current) {
-      anime({
-        targets: ctaRef.current,
-        opacity: [0, 1],
-        translateY: [50, 0],
-        easing: 'easeOutQuad',
-        duration: 800,
-        autoplay: false,
-        begin: function(anim) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                anim.play();
-                observer.unobserve(entry.target);
-              }
-            });
-          }, { threshold: 0.3 });
-          observer.observe(ctaRef.current);
-        }
-      });
-    }
-  }, []);
+  const itemVariants: Variants = {
+    hidden: { 
+      opacity: 0, 
+      y: 50 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+      },
+    },
+  };
 
   return (
     <div className="bg-slate-950 text-white min-h-screen py-20">
@@ -161,7 +129,13 @@ const Security = () => {
 
         {/* Core Security Features */}
         <section className="mb-20">
-          <div className="text-center mb-12">
+          <motion.div 
+            className="text-center mb-12"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
             <div className="inline-flex p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl mb-6">
               <Shield className="h-12 w-12 text-purple-400" />
             </div>
@@ -171,34 +145,44 @@ const Security = () => {
             <p className="text-xl text-slate-400 max-w-3xl mx-auto">
               Protect your organization with advanced security measures and proactive threat management.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
             {securityFeatures.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
-                ref={el => securityFeaturesRef.current[index] = el}
-              >
-                <CardHeader>
-                  <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
-                      <feature.icon className="h-6 w-6 text-purple-400" />
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                  <CardHeader className="">
+                    <div className="flex items-start space-x-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
+                        <feature.icon className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <CardTitle className="text-xl text-white">{feature.title}</CardTitle>
                     </div>
-                    <CardTitle className="text-xl text-white">{feature.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-400 leading-relaxed">{feature.description}</p>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="">
+                    <p className="text-slate-400 leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* Compliance & Certifications */}
         <section className="mb-20">
-          <div className="text-center mb-12">
+          <motion.div 
+            className="text-center mb-12"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
             <div className="inline-flex p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl mb-6">
               <FileText className="h-12 w-12 text-purple-400" />
             </div>
@@ -208,46 +192,57 @@ const Security = () => {
             <p className="text-xl text-slate-400 max-w-3xl mx-auto">
               Vaultix helps you meet and maintain compliance with leading industry standards and regulations.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
             {complianceCertifications.map((cert, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
-                ref={el => complianceCertificationsRef.current[index] = el}
-              >
-                <CardHeader>
-                  <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
-                      <cert.icon className="h-6 w-6 text-purple-400" />
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                  <CardHeader className="">
+                    <div className="flex items-start space-x-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
+                        <cert.icon className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <CardTitle className="text-xl text-white">{cert.title}</CardTitle>
                     </div>
-                    <CardTitle className="text-xl text-white">{cert.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-400 leading-relaxed">{cert.description}</p>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="">
+                    <p className="text-slate-400 leading-relaxed">{cert.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* CTA */}
         <section>
-          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 opacity-0" ref={ctaRef}>
-            <CardContent className="p-12 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Strengthen Your Security Posture
-              </h2>
-              <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-                Discover how Vaultix can safeguard your IT operations and ensure continuous compliance.
-              </p>
-              <Button size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold">
-                Request a Security Brief
-              </Button>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
+            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
+              <CardContent className="p-12 text-center">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Strengthen Your Security Posture
+                </h2>
+                <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                  Discover how Vaultix can safeguard your IT operations and ensure continuous compliance.
+                </p>
+                <Button variant="outline" size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold">
+                  Request a Security Brief
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         </section>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
@@ -9,14 +8,13 @@ import {
   AlertTriangle, 
   Users, 
   Workflow,
-  CheckCircle,
   ArrowRight,
   Zap,
   Lock,
   TrendingUp
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import * as anime from 'animejs';
+import { motion, Variants } from 'framer-motion';
 
 const Home = () => {
   const stats = [
@@ -76,94 +74,46 @@ const Home = () => {
     },
   ];
 
-  const heroTitleRef = useRef(null);
-  const heroDescriptionRef = useRef(null);
-  const heroButtonsRef = useRef(null);
-  const statsRef = useRef([]);
-  const featuresRef = useRef([]);
-  const benefitsRef = useRef([]);
+  // Animation variants for Framer Motion
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
 
-  useEffect(() => {
-    // Hero Section Animations
-    anime.timeline({
-      easing: 'easeOutExpo',
-      duration: 1000,
-    })
-    .add({
-      targets: heroTitleRef.current,
-      opacity: [0, 1],
-      translateY: [50, 0],
-    })
-    .add({
-      targets: heroDescriptionRef.current,
-      opacity: [0, 1],
-      translateY: [50, 0],
-      offset: '-=500',
-    })
-    .add({
-      targets: heroButtonsRef.current,
-      opacity: [0, 1],
-      translateY: [50, 0],
-      offset: '-=500',
-    });
+  const itemVariants: Variants = {
+    hidden: { 
+      opacity: 0, 
+      y: 50 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+      },
+    },
+  };
 
-    // Stats Section Animations (Count Up)
-    statsRef.current.forEach((statElement, index) => {
-      const targetValue = stats[index].rawValue;
-      anime({
-        targets: statElement,
-        innerHTML: [0, targetValue],
-        round: 1,
-        easing: 'easeOutQuad',
-        duration: 2000,
-        delay: 500 + (index * 200),
-        autoplay: false,
-        // Trigger animation when element is in viewport
-        begin: function(anim) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                anim.play();
-                observer.unobserve(entry.target);
-              }
-            });
-          }, { threshold: 0.5 });
-          observer.observe(statElement);
-        }
-      });
-    });
-
-    // Features and Benefits Section Animations (Fade In Up on Scroll)
-    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>) => {
-      elementsRef.current.forEach((element) => {
-        if (element) {
-          anime({
-            targets: element,
-            opacity: [0, 1],
-            translateY: [50, 0],
-            easing: 'easeOutQuad',
-            duration: 800,
-            autoplay: false,
-            begin: function(anim) {
-              const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    anim.play();
-                    observer.unobserve(entry.target);
-                  }
-                });
-              }, { threshold: 0.3 });
-              observer.observe(element);
-            }
-          });
-        }
-      });
-    };
-
-    animateOnScroll(featuresRef);
-    animateOnScroll(benefitsRef);
-
-  }, []);
+  const heroVariants: Variants = {
+    hidden: { 
+      opacity: 0, 
+      y: 50 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1.0,
+        ease: "easeOut"
+      },
+    },
+  };
 
   return (
     <div className="bg-slate-950 text-white">
@@ -176,150 +126,207 @@ const Home = () => {
         </div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-6 opacity-0" ref={heroTitleRef}>
+          <motion.div 
+            className="text-center max-w-4xl mx-auto"
+            initial="hidden"
+            animate="visible"
+            transition={{ staggerChildren: 0.2 }}
+          >
+            <motion.div 
+              className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-6"
+              variants={heroVariants}
+            >
               <Shield className="h-4 w-4 text-purple-400" />
               <span className="text-sm text-purple-300">Next-Generation ITSM Platform</span>
-            </div>
+            </motion.div>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight opacity-0" ref={heroTitleRef}>
+            <motion.h1 
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+              variants={heroVariants}
+            >
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
                 Unified IT Service Management
               </span>
               <br />
               <span className="text-white">for Modern Enterprises</span>
-            </h1>
+            </motion.h1>
             
-            <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed opacity-0" ref={heroDescriptionRef}>
+            <motion.p 
+              className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed"
+              variants={heroVariants}
+            >
               Streamline asset management, SBOM tracking, and intelligent ticket resolution 
               with Vaultix's comprehensive ITSM platform.
-            </p>
+            </motion.p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0" ref={heroButtonsRef}>
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-6 text-lg">
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+              variants={heroVariants}
+            >
+              <Button variant="default" size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-6 text-lg">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button size="lg" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 px-8 py-6 text-lg">
                 Watch Demo
               </Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
       <section className="py-12 border-y border-purple-500/20 bg-slate-900/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+              <motion.div key={index} className="text-center" variants={itemVariants}>
                 <div className="flex justify-center mb-4">
                   <stat.icon className="h-10 w-10 text-purple-400" />
                 </div>
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2"
-                     ref={el => statsRef.current[index] = el}>
-                  {stat.rawValue}
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                  {stat.value}
                 </div>
                 <div className="text-slate-400">{stat.label}</div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
               Complete ITSM Ecosystem
             </h2>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
               Unified platform for all your IT service management needs
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
             {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 opacity-0"
-                ref={el => featuresRef.current[index] = el}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="p-3 bg-purple-500/10 rounded-lg">
-                      <feature.icon className="h-6 w-6 text-purple-400" />
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg">
+                        <feature.icon className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
                     </div>
-                    <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
-                  </div>
-                  <p className="text-slate-400">{feature.description}</p>
-                </CardContent>
-              </Card>
+                    <p className="text-slate-400">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          <div className="text-center mt-12">
+          <motion.div 
+            className="text-center mt-12"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
             <Link to="/features">
               <Button size="lg" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10">
                 Explore All Features
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Benefits Section */}
       <section className="py-20 bg-slate-900/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
               Why Choose Vaultix?
             </h2>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
               Transform your IT operations with enterprise-grade capabilities
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
             {benefits.map((benefit, index) => (
-              <div key={index} className="text-center opacity-0" ref={el => benefitsRef.current[index] = el}>
+              <motion.div key={index} className="text-center" variants={itemVariants}>
                 <div className="inline-flex p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl mb-6">
                   <benefit.icon className="h-12 w-12 text-purple-400" />
                 </div>
                 <h3 className="text-2xl font-semibold mb-4">{benefit.title}</h3>
                 <p className="text-slate-400 text-lg">{benefit.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
-            <CardContent className="p-12 text-center">
-              <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Ready to Transform Your IT Operations?
-              </h2>
-              <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-                Join thousands of organizations that trust Vaultix for their IT service management needs.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold px-8 py-6 text-lg">
-                  Start Free Trial
-                </Button>
-                <Link to="/contact">
-                  <Button size="lg" variant="outline" className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg">
-                    Contact Sales
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
+            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
+              <CardContent className="p-12 text-center">
+                <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                  Ready to Transform Your IT Operations?
+                </h2>
+                <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                  Join thousands of organizations that trust Vaultix for their IT service management needs.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button variant="outline" size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold px-8 py-6 text-lg">
+                    Start Free Trial
                   </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+                  <Link to="/contact">
+                    <Button size="lg" variant="outline" className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg">
+                      Contact Sales
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </section>
     </div>

@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,9 +18,35 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import * as anime from 'animejs';
+import { motion, Variants } from 'framer-motion';
 
 const Solutions = () => {
+  // Animation variants for Framer Motion
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { 
+      opacity: 0, 
+      y: 50 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+      },
+    },
+  };
+
   const devBenefits = [
     {
       icon: AlertTriangle,
@@ -113,85 +138,26 @@ const Solutions = () => {
 
   const useCases = [
     {
+      icon: Code,
       title: 'Software Development Companies',
       description: 'Manage open-source dependencies, track vulnerabilities, and maintain compliance across multiple projects and teams. **Perfect Fit:** Ensures secure and compliant software delivery, crucial for maintaining customer trust and avoiding legal liabilities.'
     },
     {
+      icon: TrendingUp,
       title: 'Financial Services',
       description: 'Meet stringent regulatory requirements with automated compliance reporting and comprehensive audit trails. **Perfect Fit:** Provides the robust auditability and control necessary to navigate complex financial regulations and protect sensitive client data.'
     },
     {
+      icon: Shield,
       title: 'Healthcare Organizations',
       description: 'Ensure HIPAA compliance with secure asset management and detailed access control for sensitive systems. **Perfect Fit:** Offers the granular control and reporting required to protect patient health information (PHI) and meet strict healthcare compliance standards.'
     },
     {
+      icon: Users,
       title: 'Enterprise IT Teams',
       description: 'Streamline IT operations with unified asset management, automated workflows, and intelligent ticket resolution. **Perfect Fit:** Transforms IT from a cost center to a strategic enabler, improving efficiency, reducing operational costs, and enhancing service quality across the entire organization.'
     },
   ];
-
-  const devBenefitsRef = useRef([]);
-  const complianceFeaturesRef = useRef([]);
-  const complianceFrameworksRef = useRef([]);
-  const useCasesRef = useRef([]);
-  const ctaRef = useRef(null);
-
-  useEffect(() => {
-    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>, staggerDelay = 0) => {
-      elementsRef.current.forEach((element, index) => {
-        if (element) {
-          anime({
-            targets: element,
-            opacity: [0, 1],
-            translateY: [50, 0],
-            easing: 'easeOutQuad',
-            duration: 800,
-            delay: index * staggerDelay,
-            autoplay: false,
-            begin: function(anim) {
-              const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    anim.play();
-                    observer.unobserve(entry.target);
-                  }
-                });
-              }, { threshold: 0.3 });
-              observer.observe(element);
-            }
-          });
-        }
-      });
-    };
-
-    animateOnScroll(devBenefitsRef, 100);
-    animateOnScroll(complianceFeaturesRef, 100);
-    animateOnScroll(complianceFrameworksRef, 100);
-    animateOnScroll(useCasesRef, 100);
-
-    if (ctaRef.current) {
-      anime({
-        targets: ctaRef.current,
-        opacity: [0, 1],
-        translateY: [50, 0],
-        easing: 'easeOutQuad',
-        duration: 800,
-        autoplay: false,
-        begin: function(anim) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                anim.play();
-                observer.unobserve(entry.target);
-              }
-            });
-          }, { threshold: 0.3 });
-          observer.observe(ctaRef.current);
-        }
-      });
-    }
-
-  }, []);
 
   return (
     <div className="bg-slate-950 text-white min-h-screen py-20">
@@ -224,94 +190,121 @@ const Solutions = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             {devBenefits.map((benefit, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
-                ref={el => devBenefitsRef.current[index] = el}
-              >
-                <CardHeader>
-                  <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
-                      <benefit.icon className="h-6 w-6 text-purple-400" />
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                  <CardHeader className="">
+                    <div className="flex items-start space-x-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg mt-1">
+                        <benefit.icon className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <CardTitle className="text-xl text-white">{benefit.title}</CardTitle>
                     </div>
-                    <CardTitle className="text-xl text-white">{benefit.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-400 leading-relaxed">{benefit.description}</p>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="">
+                    <p className="text-slate-400 leading-relaxed">{benefit.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* How It Makes You Compliant */}
         <section className="mb-20">
-          <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/30 opacity-0" ref={el => complianceFeaturesRef.current[0] = el}>
-            <CardContent className="p-12">
-              <div className="text-center mb-12">
-                <Target className="h-16 w-16 text-purple-400 mx-auto mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  How Vaultix Makes Your Company Compliant
-                </h2>
-                <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                  Compliance is not just about checking boxes—it's about building a secure, 
-                  auditable, and resilient organization. Vaultix provides the foundation for 
-                  continuous compliance across your entire IT infrastructure.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                {complianceFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-start space-x-4 p-6 bg-slate-900/50 rounded-lg border border-purple-500/20 opacity-0" ref={el => complianceFeaturesRef.current[index + 1] = el}>
-                    <div className="p-3 bg-purple-500/10 rounded-lg">
-                      <feature.icon className="h-6 w-6 text-purple-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                      <p className="text-slate-400">{feature.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-slate-900/50 rounded-lg p-8 border border-purple-500/20 opacity-0" ref={el => complianceFeaturesRef.current[complianceFeatures.length + 1] = el}>
-                <h3 className="text-2xl font-bold mb-6 text-center">The Compliance Journey with Vaultix</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-xl font-bold text-purple-400">1</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Discover</h4>
-                    <p className="text-sm text-slate-400">Automatically inventory all assets and dependencies</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-xl font-bold text-purple-400">2</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Assess</h4>
-                    <p className="text-sm text-slate-400">Scan for vulnerabilities and assess compliance gaps</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-xl font-bold text-purple-400">3</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Remediate</h4>
-                    <p className="text-sm text-slate-400">Automated ticket creation and workflow management</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-xl font-bold text-purple-400">4</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Report</h4>
-                    <p className="text-sm text-slate-400">Generate compliance reports and audit evidence</p>
-                  </div>
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/30">
+              <CardContent className="p-12">
+                <div className="text-center mb-12">
+                  <Target className="h-16 w-16 text-purple-400 mx-auto mb-6" />
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    How Vaultix Makes Your Company Compliant
+                  </h2>
+                  <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+                    Compliance is not just about checking boxes—it's about building a secure, 
+                    auditable, and resilient organization. Vaultix provides the foundation for 
+                    continuous compliance across your entire IT infrastructure.
+                  </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  {complianceFeatures.map((feature, index) => (
+                    <motion.div 
+                      key={index} 
+                      className="flex items-start space-x-4 p-6 bg-slate-900/50 rounded-lg border border-purple-500/20"
+                      variants={itemVariants}
+                    >
+                      <div className="p-3 bg-purple-500/10 rounded-lg">
+                        <feature.icon className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                        <p className="text-slate-400">{feature.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                <motion.div 
+                  className="bg-slate-900/50 rounded-lg p-8 border border-purple-500/20"
+                  variants={itemVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  <h3 className="text-2xl font-bold mb-6 text-center">The Compliance Journey with Vaultix</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-purple-400">1</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">Discover</h4>
+                      <p className="text-sm text-slate-400">Automatically inventory all assets and dependencies</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-purple-400">2</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">Assess</h4>
+                      <p className="text-sm text-slate-400">Scan for vulnerabilities and assess compliance gaps</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-purple-400">3</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">Remediate</h4>
+                      <p className="text-sm text-slate-400">Automated ticket creation and workflow management</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-purple-400">4</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">Report</h4>
+                      <p className="text-sm text-slate-400">Generate compliance reports and audit evidence</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </section>
 
         {/* Compliance Frameworks */}
@@ -329,30 +322,34 @@ const Solutions = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             {complianceFrameworks.map((framework, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
-                ref={el => complianceFrameworksRef.current[index] = el}
-              >
-                <CardHeader>
-                  <CardTitle className="text-xl text-white">{framework.name}</CardTitle>
-                  <p className="text-slate-400 text-sm">{framework.description}</p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {framework.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center space-x-2 text-slate-400 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                  <CardHeader className="">
+                    <CardTitle className="text-xl text-white">{framework.name}</CardTitle>
+                    <p className="text-slate-400 text-sm">{framework.description}</p>
+                  </CardHeader>
+                  <CardContent className="">
+                    <ul className="space-y-2">
+                      {framework.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="flex items-center space-x-2 text-slate-400 text-sm">
+                          <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* Use Cases */}
@@ -366,53 +363,64 @@ const Solutions = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             {useCases.map((useCase, index) => (
-              <Card 
-                key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
-                ref={el => useCasesRef.current[index] = el}
-              >
-                <CardContent className="p-8">
-                  <div className="flex items-start space-x-4">
-                    <div className="p-4 bg-purple-500/10 rounded-lg">
-                      <useCase.icon className="h-8 w-8 text-purple-400" />
+              <motion.div key={index} variants={itemVariants}>
+                <Card className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                  <CardContent className="p-8">
+                    <div className="flex items-start space-x-4">
+                      <div className="p-4 bg-purple-500/10 rounded-lg">
+                        <useCase.icon className="h-8 w-8 text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-semibold mb-3">{useCase.title}</h3>
+                        <p className="text-slate-400 leading-relaxed">{useCase.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-semibold mb-3">{useCase.title}</h3>
-                      <p className="text-slate-400 leading-relaxed">{useCase.description}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* CTA */}
         <section>
-          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 opacity-0" ref={ctaRef}>
-            <CardContent className="p-12 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Ready to Achieve Compliance?
-              </h2>
-              <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-                Let Vaultix help you build a secure, compliant, and efficient IT infrastructure. 
-                Schedule a demo to see how we can transform your operations.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold px-8 py-6 text-lg">
-                  Schedule Demo
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Link to="/contact">
-                  <Button size="lg" variant="outline" className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg">
-                    Contact Sales
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
+              <CardContent className="p-12 text-center">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Ready to Achieve Compliance?
+                </h2>
+                <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                  Let Vaultix help you build a secure, compliant, and efficient IT infrastructure. 
+                  Schedule a demo to see how we can transform your operations.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button variant="default" size="lg" className="bg-white text-purple-900 hover:bg-slate-100 font-semibold px-8 py-6 text-lg">
+                    Schedule Demo
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+                  <Link to="/contact">
+                    <Button size="lg" variant="outline" className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg">
+                      Contact Sales
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </section>
       </div>
     </div>
