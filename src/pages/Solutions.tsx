@@ -1,11 +1,12 @@
+import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Code, 
-  Shield, 
-  FileCheck, 
-  TrendingUp, 
-  Clock, 
+import {
+  Code,
+  Shield,
+  FileCheck,
+  TrendingUp,
+  Clock,
   AlertTriangle,
   CheckCircle,
   GitBranch,
@@ -18,38 +19,39 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import anime from 'animejs';
 
 const Solutions = () => {
   const devBenefits = [
     {
       icon: AlertTriangle,
       title: 'Early Vulnerability Detection',
-      description: 'Identify security vulnerabilities in dependencies before they reach production. Automated scanning during development reduces risk and prevents costly security incidents.',
+      description: 'Identify security vulnerabilities in dependencies before they reach production. Automated scanning during development reduces risk and prevents costly security incidents. **Perfect Fit:** Proactively secures your software supply chain, reducing development costs and preventing costly breaches by catching issues early.'
     },
     {
       icon: Zap,
       title: 'Streamlined Security Processes',
-      description: 'Integrate security into your development workflow without slowing down delivery. Automated ticket creation and remediation tracking keep your team focused on building features.',
+      description: 'Integrate security into your development workflow without slowing down delivery. Automated ticket creation and remediation tracking keep your team focused on building features. **Perfect Fit:** Enhances developer productivity by automating security tasks, allowing teams to focus on innovation rather than manual security checks.'
     },
     {
       icon: GitBranch,
       title: 'CI/CD Integration',
-      description: 'Seamlessly integrate with your existing CI/CD pipelines. Automated SBOM generation and vulnerability scanning as part of your build process ensures continuous security.',
+      description: 'Seamlessly integrate with your existing CI/CD pipelines. Automated SBOM generation and vulnerability scanning as part of your build process ensures continuous security. **Perfect Fit:** Guarantees that security is an integral part of your DevOps pipeline, ensuring every release is compliant and secure from the start.'
     },
     {
       icon: FileCheck,
       title: 'Compliance Made Easy',
-      description: 'Automatically generate compliance reports and maintain audit trails. Meet regulatory requirements without manual documentation and reduce compliance overhead by 80%.',
+      description: 'Automatically generate compliance reports and maintain audit trails. Meet regulatory requirements without manual documentation and reduce compliance overhead by 80%. **Perfect Fit:** Simplifies complex compliance mandates, saving significant time and resources while ensuring adherence to industry standards.'
     },
     {
       icon: Clock,
       title: 'Reduced Manual Effort',
-      description: 'Eliminate repetitive security tasks with intelligent automation. Your team can focus on innovation while Vaultix handles security monitoring, reporting, and ticket management.',
+      description: 'Eliminate repetitive security tasks with intelligent automation. Your team can focus on innovation while Vaultix handles security monitoring, reporting, and ticket management. **Perfect Fit:** Frees up valuable engineering time, allowing your team to innovate faster and deliver higher-quality products.'
     },
     {
       icon: TrendingUp,
       title: 'Faster Time to Market',
-      description: 'Accelerate development cycles with automated security checks and streamlined approval workflows. Ship secure software faster with confidence.',
+      description: 'Accelerate development cycles with automated security checks and streamlined approval workflows. Ship secure software faster with confidence. **Perfect Fit:** Enables rapid, secure software delivery, giving your organization a competitive edge in fast-paced markets.'
     },
   ];
 
@@ -90,47 +92,106 @@ const Solutions = () => {
     {
       icon: FileText,
       title: 'Automated Audit Trails',
-      description: 'Comprehensive logging of all activities, changes, and access events with tamper-proof records for compliance audits.',
+      description: 'Comprehensive logging of all activities, changes, and access events with tamper-proof records for compliance audits. **Perfect Fit:** Provides irrefutable evidence for auditors, simplifying compliance and ensuring accountability.'
     },
     {
       icon: Shield,
       title: 'Risk Assessment & Threat Intelligence',
-      description: 'Real-time risk scoring based on vulnerability severity, asset criticality, and threat intelligence feeds.',
+      description: 'Real-time risk scoring based on vulnerability severity, asset criticality, and threat intelligence feeds. **Perfect Fit:** Enables data-driven risk prioritization, allowing your organization to allocate resources effectively to mitigate the most impactful threats.'
     },
     {
       icon: Award,
       title: 'Compliance Reporting',
-      description: 'Pre-built reports for major compliance frameworks with automated evidence collection and export capabilities.',
+      description: 'Pre-built reports for major compliance frameworks with automated evidence collection and export capabilities. **Perfect Fit:** Streamlines reporting processes, saving countless hours and ensuring accuracy for regulatory submissions.'
     },
     {
       icon: Lock,
       title: 'Access Control & Governance',
-      description: 'Role-based access control with detailed permissions and approval workflows for sensitive operations.',
+      description: 'Role-based access control with detailed permissions and approval workflows for sensitive operations. **Perfect Fit:** Enforces least privilege access, a critical component for data security and compliance in any enterprise environment.'
     },
   ];
 
   const useCases = [
     {
       title: 'Software Development Companies',
-      description: 'Manage open-source dependencies, track vulnerabilities, and maintain compliance across multiple projects and teams.',
-      icon: Code,
+      description: 'Manage open-source dependencies, track vulnerabilities, and maintain compliance across multiple projects and teams. **Perfect Fit:** Ensures secure and compliant software delivery, crucial for maintaining customer trust and avoiding legal liabilities.'
     },
     {
       title: 'Financial Services',
-      description: 'Meet stringent regulatory requirements with automated compliance reporting and comprehensive audit trails.',
-      icon: FileCheck,
+      description: 'Meet stringent regulatory requirements with automated compliance reporting and comprehensive audit trails. **Perfect Fit:** Provides the robust auditability and control necessary to navigate complex financial regulations and protect sensitive client data.'
     },
     {
       title: 'Healthcare Organizations',
-      description: 'Ensure HIPAA compliance with secure asset management and detailed access control for sensitive systems.',
-      icon: Shield,
+      description: 'Ensure HIPAA compliance with secure asset management and detailed access control for sensitive systems. **Perfect Fit:** Offers the granular control and reporting required to protect patient health information (PHI) and meet strict healthcare compliance standards.'
     },
     {
       title: 'Enterprise IT Teams',
-      description: 'Streamline IT operations with unified asset management, automated workflows, and intelligent ticket resolution.',
-      icon: Users,
+      description: 'Streamline IT operations with unified asset management, automated workflows, and intelligent ticket resolution. **Perfect Fit:** Transforms IT from a cost center to a strategic enabler, improving efficiency, reducing operational costs, and enhancing service quality across the entire organization.'
     },
   ];
+
+  const devBenefitsRef = useRef([]);
+  const complianceFeaturesRef = useRef([]);
+  const complianceFrameworksRef = useRef([]);
+  const useCasesRef = useRef([]);
+  const ctaRef = useRef(null);
+
+  useEffect(() => {
+    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>, staggerDelay = 0) => {
+      elementsRef.current.forEach((element, index) => {
+        if (element) {
+          anime({
+            targets: element,
+            opacity: [0, 1],
+            translateY: [50, 0],
+            easing: 'easeOutQuad',
+            duration: 800,
+            delay: index * staggerDelay,
+            autoplay: false,
+            begin: function(anim) {
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    anim.play();
+                    observer.unobserve(entry.target);
+                  }
+                });
+              }, { threshold: 0.3 });
+              observer.observe(element);
+            }
+          });
+        }
+      });
+    };
+
+    animateOnScroll(devBenefitsRef, 100);
+    animateOnScroll(complianceFeaturesRef, 100);
+    animateOnScroll(complianceFrameworksRef, 100);
+    animateOnScroll(useCasesRef, 100);
+
+    if (ctaRef.current) {
+      anime({
+        targets: ctaRef.current,
+        opacity: [0, 1],
+        translateY: [50, 0],
+        easing: 'easeOutQuad',
+        duration: 800,
+        autoplay: false,
+        begin: function(anim) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                anim.play();
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.3 });
+          observer.observe(ctaRef.current);
+        }
+      });
+    }
+
+  }, []);
 
   return (
     <div className="bg-slate-950 text-white min-h-screen py-20">
@@ -167,7 +228,8 @@ const Solutions = () => {
             {devBenefits.map((benefit, index) => (
               <Card 
                 key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300"
+                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
+                ref={el => devBenefitsRef.current[index] = el}
               >
                 <CardHeader>
                   <div className="flex items-start space-x-4">
@@ -187,7 +249,7 @@ const Solutions = () => {
 
         {/* How It Makes You Compliant */}
         <section className="mb-20">
-          <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/30">
+          <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/30 opacity-0" ref={el => complianceFeaturesRef.current[0] = el}>
             <CardContent className="p-12">
               <div className="text-center mb-12">
                 <Target className="h-16 w-16 text-purple-400 mx-auto mb-6" />
@@ -203,7 +265,7 @@ const Solutions = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                 {complianceFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-start space-x-4 p-6 bg-slate-900/50 rounded-lg border border-purple-500/20">
+                  <div key={index} className="flex items-start space-x-4 p-6 bg-slate-900/50 rounded-lg border border-purple-500/20 opacity-0" ref={el => complianceFeaturesRef.current[index + 1] = el}>
                     <div className="p-3 bg-purple-500/10 rounded-lg">
                       <feature.icon className="h-6 w-6 text-purple-400" />
                     </div>
@@ -215,7 +277,7 @@ const Solutions = () => {
                 ))}
               </div>
 
-              <div className="bg-slate-900/50 rounded-lg p-8 border border-purple-500/20">
+              <div className="bg-slate-900/50 rounded-lg p-8 border border-purple-500/20 opacity-0" ref={el => complianceFeaturesRef.current[complianceFeatures.length + 1] = el}>
                 <h3 className="text-2xl font-bold mb-6 text-center">The Compliance Journey with Vaultix</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div className="text-center">
@@ -271,7 +333,8 @@ const Solutions = () => {
             {complianceFrameworks.map((framework, index) => (
               <Card 
                 key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300"
+                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
+                ref={el => complianceFrameworksRef.current[index] = el}
               >
                 <CardHeader>
                   <CardTitle className="text-xl text-white">{framework.name}</CardTitle>
@@ -307,7 +370,8 @@ const Solutions = () => {
             {useCases.map((useCase, index) => (
               <Card 
                 key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300"
+                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
+                ref={el => useCasesRef.current[index] = el}
               >
                 <CardContent className="p-8">
                   <div className="flex items-start space-x-4">
@@ -327,7 +391,7 @@ const Solutions = () => {
 
         {/* CTA */}
         <section>
-          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
+          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 opacity-0" ref={ctaRef}>
             <CardContent className="p-12 text-center">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Ready to Achieve Compliance?
