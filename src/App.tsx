@@ -7,6 +7,8 @@ import Features from './pages/Features';
 import Solutions from './pages/Solutions';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
+import Security from './pages/Security'; // New import
+import Industries from './pages/Industries'; // New import
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
             <Route path="/solutions" element={<Solutions />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/security" element={<Security />} /> {/* New Route */}
+            <Route path="/industries" element={<Industries />} /> {/* New Route */}
           </Routes>
         </main>
         <Footer />
@@ -29,3 +33,4 @@ function App() {
 }
 
 export default App;
+

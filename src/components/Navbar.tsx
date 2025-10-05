@@ -28,6 +28,12 @@ const Navbar = () => {
             <Link to="/solutions" className="text-slate-300 hover:text-purple-400 transition-colors font-medium">
               Solutions
             </Link>
+            <Link to="/security" className="text-slate-300 hover:text-purple-400 transition-colors font-medium">
+              Security
+            </Link>
+            <Link to="/industries" className="text-slate-300 hover:text-purple-400 transition-colors font-medium">
+              Industries
+            </Link>
             <Link to="/pricing" className="text-slate-300 hover:text-purple-400 transition-colors font-medium">
               Pricing
             </Link>
@@ -66,6 +72,20 @@ const Navbar = () => {
               Solutions
             </Link>
             <Link
+              to="/security"
+              className="block text-slate-300 hover:text-purple-400 transition-colors font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Security
+            </Link>
+            <Link
+              to="/industries"
+              className="block text-slate-300 hover:text-purple-400 transition-colors font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Industries
+            </Link>
+            <Link
               to="/pricing"
               className="block text-slate-300 hover:text-purple-400 transition-colors font-medium"
               onClick={() => setIsOpen(false)}
@@ -90,3 +110,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
