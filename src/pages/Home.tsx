@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
@@ -15,44 +16,45 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import anime from 'animejs';
 
 const Home = () => {
   const stats = [
-    { label: 'Assets Discovered', value: '10,000+', icon: Package },
-    { label: 'Components Tracked', value: '50,000+', icon: GitBranch },
-    { label: 'Active Tickets', value: '5,000+', icon: Ticket },
+    { label: 'Assets Discovered', value: '10,000+', icon: Package, rawValue: 10000 },
+    { label: 'Components Tracked', value: '50,000+', icon: GitBranch, rawValue: 50000 },
+    { label: 'Active Tickets', value: '5,000+', icon: Ticket, rawValue: 5000 },
   ];
 
   const features = [
     {
       icon: Package,
       title: 'Asset Discovery',
-      description: 'Automated discovery and management of all IT assets with seamless AD integration and real-time tracking.',
+      description: 'Automated discovery and management of all IT assets with seamless AD integration and real-time tracking. **Perfect Fit:** Ensures complete visibility and control, reducing manual effort and improving compliance with asset inventories.',
     },
     {
       icon: GitBranch,
       title: 'SBOM Tracking',
-      description: 'Generate comprehensive Software Bill of Materials from your repositories and track dependencies effortlessly.',
+      description: 'Generate comprehensive Software Bill of Materials from your repositories and track dependencies effortlessly. **Perfect Fit:** Essential for supply chain security and compliance, providing transparency into software components and their origins.',
     },
     {
       icon: Ticket,
       title: 'Ticket Management',
-      description: 'Intelligent ticket resolution with customizable SLAs, team assignments, and automated workflows.',
+      description: 'Intelligent ticket resolution with customizable SLAs, team assignments, and automated workflows. **Perfect Fit:** Optimizes IT service delivery, reduces resolution times, and enhances user satisfaction with structured, efficient processes.',
     },
     {
       icon: AlertTriangle,
       title: 'Vulnerability Scanning',
-      description: 'Automated vulnerability detection with instant ticket creation and comprehensive reporting.',
+      description: 'Automated vulnerability detection with instant ticket creation and comprehensive reporting. **Perfect Fit:** Proactively identifies and addresses security risks, preventing breaches and maintaining a strong security posture.',
     },
     {
       icon: Workflow,
       title: 'Workflow Automation',
-      description: 'Create custom workflows for service requests, incident management, and approval processes.',
+      description: 'Create custom workflows for service requests, incident management, and approval processes. **Perfect Fit:** Boosts operational efficiency by automating repetitive tasks, ensuring consistency, and freeing up valuable IT resources.',
     },
     {
       icon: Users,
       title: 'Team Collaboration',
-      description: 'Organize teams, assign tickets, and streamline communication across your organization.',
+      description: 'Organize teams, assign tickets, and streamline communication across your organization. **Perfect Fit:** Fosters better teamwork and accountability, leading to faster problem resolution and improved overall productivity.',
     },
   ];
 
@@ -60,19 +62,108 @@ const Home = () => {
     {
       icon: Zap,
       title: 'Boost Productivity',
-      description: 'Automate repetitive tasks and reduce manual effort by up to 70% with intelligent workflows.',
+      description: 'Automate repetitive tasks and reduce manual effort by up to 70% with intelligent workflows. **Perfect Fit:** Directly impacts your bottom line by optimizing resource allocation and accelerating task completion.',
     },
     {
       icon: Lock,
       title: 'Enhanced Security',
-      description: 'Stay compliant with industry standards and proactively manage vulnerabilities.',
+      description: 'Stay compliant with industry standards and proactively manage vulnerabilities. **Perfect Fit:** Protects your organization from cyber threats and regulatory penalties, building trust with customers and stakeholders.',
     },
     {
       icon: TrendingUp,
       title: 'Scale with Confidence',
-      description: 'Enterprise-grade platform that grows with your organization\'s needs.',
+      description: 'Enterprise-grade platform that grows with your organization\'s needs. **Perfect Fit:** Provides a future-proof solution that adapts to your evolving business requirements, ensuring long-term value and scalability.',
     },
   ];
+
+  const heroTitleRef = useRef(null);
+  const heroDescriptionRef = useRef(null);
+  const heroButtonsRef = useRef(null);
+  const statsRef = useRef([]);
+  const featuresRef = useRef([]);
+  const benefitsRef = useRef([]);
+
+  useEffect(() => {
+    // Hero Section Animations
+    anime.timeline({
+      easing: 'easeOutExpo',
+      duration: 1000,
+    })
+    .add({
+      targets: heroTitleRef.current,
+      opacity: [0, 1],
+      translateY: [50, 0],
+    })
+    .add({
+      targets: heroDescriptionRef.current,
+      opacity: [0, 1],
+      translateY: [50, 0],
+      offset: '-=500',
+    })
+    .add({
+      targets: heroButtonsRef.current,
+      opacity: [0, 1],
+      translateY: [50, 0],
+      offset: '-=500',
+    });
+
+    // Stats Section Animations (Count Up)
+    statsRef.current.forEach((statElement, index) => {
+      const targetValue = stats[index].rawValue;
+      anime({
+        targets: statElement,
+        innerHTML: [0, targetValue],
+        round: 1,
+        easing: 'easeOutQuad',
+        duration: 2000,
+        delay: 500 + (index * 200),
+        autoplay: false,
+        // Trigger animation when element is in viewport
+        begin: function(anim) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                anim.play();
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.5 });
+          observer.observe(statElement);
+        }
+      });
+    });
+
+    // Features and Benefits Section Animations (Fade In Up on Scroll)
+    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>) => {
+      elementsRef.current.forEach((element) => {
+        if (element) {
+          anime({
+            targets: element,
+            opacity: [0, 1],
+            translateY: [50, 0],
+            easing: 'easeOutQuad',
+            duration: 800,
+            autoplay: false,
+            begin: function(anim) {
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    anim.play();
+                    observer.unobserve(entry.target);
+                  }
+                });
+              }, { threshold: 0.3 });
+              observer.observe(element);
+            }
+          });
+        }
+      });
+    };
+
+    animateOnScroll(featuresRef);
+    animateOnScroll(benefitsRef);
+
+  }, []);
 
   return (
     <div className="bg-slate-950 text-white">
@@ -86,12 +177,12 @@ const Home = () => {
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-6">
+            <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-6 opacity-0" ref={heroTitleRef}>
               <Shield className="h-4 w-4 text-purple-400" />
               <span className="text-sm text-purple-300">Next-Generation ITSM Platform</span>
             </div>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight opacity-0" ref={heroTitleRef}>
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
                 Unified IT Service Management
               </span>
@@ -99,12 +190,12 @@ const Home = () => {
               <span className="text-white">for Modern Enterprises</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed opacity-0" ref={heroDescriptionRef}>
               Streamline asset management, SBOM tracking, and intelligent ticket resolution 
               with Vaultix's comprehensive ITSM platform.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0" ref={heroButtonsRef}>
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-6 text-lg">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -126,8 +217,9 @@ const Home = () => {
                 <div className="flex justify-center mb-4">
                   <stat.icon className="h-10 w-10 text-purple-400" />
                 </div>
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                  {stat.value}
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2"
+                     ref={el => statsRef.current[index] = el}>
+                  {stat.rawValue}
                 </div>
                 <div className="text-slate-400">{stat.label}</div>
               </div>
@@ -150,7 +242,11 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
+              <Card 
+                key={index} 
+                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 opacity-0"
+                ref={el => featuresRef.current[index] = el}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="p-3 bg-purple-500/10 rounded-lg">
@@ -189,7 +285,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="text-center">
+              <div key={index} className="text-center opacity-0" ref={el => benefitsRef.current[index] = el}>
                 <div className="inline-flex p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl mb-6">
                   <benefit.icon className="h-12 w-12 text-purple-400" />
                 </div>
