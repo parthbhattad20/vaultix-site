@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Star, Settings, Zap, Shield, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import anime from 'animejs';
 
 const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
@@ -25,6 +26,7 @@ const Pricing = () => {
         'Up to 5 Team Members',
         'Basic Workflow Automation',
       ],
+      perfectFit: 'Ideal for startups and small businesses needing foundational IT asset and security management to establish compliance and operational efficiency from day one.',
     },
     {
       name: 'Standard',
@@ -45,6 +47,7 @@ const Pricing = () => {
         'SLA Management',
         'Priority Email Support',
       ],
+      perfectFit: 'Designed for scaling businesses that require robust security, advanced automation, and deeper insights to manage growing IT infrastructure and meet evolving compliance demands.',
     },
     {
       name: 'Premium',
@@ -65,6 +68,7 @@ const Pricing = () => {
         'Custom Workflow Builder',
         'Multi-Site Support',
       ],
+      perfectFit: 'Tailored for large enterprises with complex IT environments, this plan offers comprehensive security, advanced compliance tools, and dedicated support to ensure seamless operations and strategic growth.',
     },
     {
       name: 'Enterprise',
@@ -85,6 +89,7 @@ const Pricing = () => {
         'Training & Onboarding',
         'Dedicated Infrastructure',
       ],
+      perfectFit: 'The ultimate solution for global corporations requiring bespoke configurations, on-premise deployments, and specialized consulting to meet the most stringent security and compliance requirements.',
     },
   ];
 
@@ -92,24 +97,108 @@ const Pricing = () => {
     {
       icon: Settings,
       title: 'Custom Fields & Forms',
-      description: 'Tailor data collection to your specific organizational needs with custom fields, forms, and validation rules.',
+      description: 'Tailor data collection to your specific organizational needs with custom fields, forms, and validation rules. **Perfect Fit:** Ensures Vaultix captures exactly the information critical to your unique business processes and reporting requirements.',
     },
     {
       icon: Zap,
       title: 'Custom Integrations',
-      description: 'Connect Vaultix with your existing tools and systems through custom API integrations and webhooks.',
+      description: 'Connect Vaultix with your existing tools and systems through custom API integrations and webhooks. **Perfect Fit:** Seamlessly embeds Vaultix into your current IT ecosystem, maximizing efficiency and data flow without disrupting established workflows.',
     },
     {
       icon: Shield,
       title: 'On-Premise Deployment',
-      description: 'Deploy Vaultix on your own infrastructure for maximum control and compliance with data residency requirements.',
+      description: 'Deploy Vaultix on your own infrastructure for maximum control and compliance with data residency requirements. **Perfect Fit:** Provides unparalleled control over data security and sovereignty, essential for organizations with strict regulatory or internal security policies.',
     },
     {
       icon: Users,
       title: 'Dedicated Support',
-      description: 'Get personalized support from our team with dedicated account managers and priority assistance.',
+      description: 'Get personalized support from our team with dedicated account managers and priority assistance. **Perfect Fit:** Guarantees rapid resolution of any issues and proactive guidance, ensuring your team always has the expert help needed to leverage Vaultix fully.',
     },
   ];
+
+  const pricingCardsRef = useRef([]);
+  const customizationOptionsRef = useRef([]);
+  const enterpriseFeaturesRef = useRef([]);
+  const faqSectionRef = useRef(null);
+  const ctaRef = useRef(null);
+
+  useEffect(() => {
+    const animateOnScroll = (elementsRef: React.MutableRefObject<any[]>, staggerDelay = 0) => {
+      elementsRef.current.forEach((element, index) => {
+        if (element) {
+          anime({
+            targets: element,
+            opacity: [0, 1],
+            translateY: [50, 0],
+            easing: 'easeOutQuad',
+            duration: 800,
+            delay: index * staggerDelay,
+            autoplay: false,
+            begin: function(anim) {
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    anim.play();
+                    observer.unobserve(entry.target);
+                  }
+                });
+              }, { threshold: 0.3 });
+              observer.observe(element);
+            }
+          });
+        }
+      });
+    };
+
+    animateOnScroll(pricingCardsRef, 100);
+    animateOnScroll(customizationOptionsRef, 100);
+    animateOnScroll(enterpriseFeaturesRef, 100);
+
+    if (faqSectionRef.current) {
+      anime({
+        targets: faqSectionRef.current,
+        opacity: [0, 1],
+        translateY: [50, 0],
+        easing: 'easeOutQuad',
+        duration: 800,
+        autoplay: false,
+        begin: function(anim) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                anim.play();
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.3 });
+          observer.observe(faqSectionRef.current);
+        }
+      });
+    }
+
+    if (ctaRef.current) {
+      anime({
+        targets: ctaRef.current,
+        opacity: [0, 1],
+        translateY: [50, 0],
+        easing: 'easeOutQuad',
+        duration: 800,
+        autoplay: false,
+        begin: function(anim) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                anim.play();
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.3 });
+          observer.observe(ctaRef.current);
+        }
+      });
+    }
+
+  }, []);
 
   const calculatePrice = (monthlyPrice: number | null, annualPrice: number | null) => {
     if (monthlyPrice === null || annualPrice === null) return 'Custom Pricing';
@@ -166,11 +255,11 @@ const Pricing = () => {
           {pricingPlans.map((plan, index) => (
             <Card
               key={index}
-              className={`relative ${
-                plan.popular
+              className={`relative ${plan.popular
                   ? 'bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/50 scale-105'
                   : 'bg-slate-900/50 border-purple-500/20'
-              } hover:border-purple-500/50 transition-all duration-300`}
+                } hover:border-purple-500/50 transition-all duration-300 opacity-0`}
+              ref={el => pricingCardsRef.current[index] = el}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -200,6 +289,7 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
+                <p className="text-slate-500 text-xs mt-4 italic">{plan.perfectFit}</p>
                 {plan.monthlyPrice ? (
                   <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold">
                     Get Started
@@ -232,7 +322,8 @@ const Pricing = () => {
             {customizationOptions.map((option, index) => (
               <Card 
                 key={index} 
-                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300"
+                className="bg-slate-900/50 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 opacity-0"
+                ref={el => customizationOptionsRef.current[index] = el}
               >
                 <CardContent className="p-8">
                   <div className="flex items-start space-x-4">
@@ -252,7 +343,7 @@ const Pricing = () => {
 
         {/* Enterprise Features */}
         <section className="mb-20">
-          <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/30">
+          <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/30 opacity-0" ref={el => enterpriseFeaturesRef.current[0] = el}>
             <CardContent className="p-12">
               <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -265,21 +356,21 @@ const Pricing = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
+                <div className="text-center opacity-0" ref={el => enterpriseFeaturesRef.current[1] = el}>
                   <div className="inline-flex p-4 bg-purple-500/10 rounded-2xl mb-4">
                     <Shield className="h-10 w-10 text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">99.9% Uptime SLA</h3>
                   <p className="text-slate-400">Enterprise-grade infrastructure with guaranteed availability</p>
                 </div>
-                <div className="text-center">
+                <div className="text-center opacity-0" ref={el => enterpriseFeaturesRef.current[2] = el}>
                   <div className="inline-flex p-4 bg-purple-500/10 rounded-2xl mb-4">
                     <Zap className="h-10 w-10 text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Real-Time Sync</h3>
                   <p className="text-slate-400">Instant updates across all users and integrations</p>
                 </div>
-                <div className="text-center">
+                <div className="text-center opacity-0" ref={el => enterpriseFeaturesRef.current[3] = el}>
                   <div className="inline-flex p-4 bg-purple-500/10 rounded-2xl mb-4">
                     <Settings className="h-10 w-10 text-purple-400" />
                   </div>
@@ -292,7 +383,7 @@ const Pricing = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="mb-20">
+        <section className="mb-20 opacity-0" ref={faqSectionRef}>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Frequently Asked Questions
@@ -332,7 +423,7 @@ const Pricing = () => {
 
         {/* CTA */}
         <section>
-          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
+          <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 opacity-0" ref={ctaRef}>
             <CardContent className="p-12 text-center">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Ready to Get Started?
@@ -360,3 +451,4 @@ const Pricing = () => {
 };
 
 export default Pricing;
+
