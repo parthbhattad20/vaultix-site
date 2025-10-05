@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Lock, FileText, BarChart3, AlertTriangle, Fingerprint, Cloud, Server, HardDrive, GitBranch, Key, Users, CheckCircle } from 'lucide-react';
-import anime from 'animejs';
+import * as anime from 'animejs';
 
 const Security = () => {
   const securityFeatures = [

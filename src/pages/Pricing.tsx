@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, Star, Settings, Zap, Shield, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import anime from 'animejs';
+import * as anime from 'animejs';
 
 const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');

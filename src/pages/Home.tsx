@@ -16,7 +16,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import anime from 'animejs';
+import * as anime from 'animejs';
 
 const Home = () => {
   const stats = [

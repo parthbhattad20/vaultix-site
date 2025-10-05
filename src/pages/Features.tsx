@@ -19,7 +19,7 @@ import {
   BarChart3,
   Zap
 } from 'lucide-react';
-import anime from 'animejs';
+import * as anime from 'animejs';
 
 const Features = () => {
   const featureSections = [
